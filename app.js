@@ -1,8 +1,28 @@
+//MONGO DB CONNECTION: mongodb+srv://isaac:<password>@cluster0-zob1a.mongodb.net/test?retryWrites=true&w=majority
 const express = require('express');
-
-const app = express();
-//body-parser allows us to be able to extract the JSON object from the request
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
+const app = express();
+
+//now we need to register our new router in our app.js file
+//First we need to import it i.e. registering our routes with the app
+const stuffRoutes = require('./routes/stuff');
+const userRoutes = require('./routes/user');
+
+//we need to import our data model incase we want to use it in our app
+
+mongoose.connect('mongodb+srv://isaac:YZv5xlNvqwuJMa2Z@cluster0-zob1a.mongodb.net/test?retryWrites=true&w=majority')
+    .then(() => {
+        console.log('Succesfuly connected to mongodb atlas')
+    }).catch((error) => {
+        console.log('Unable to connect succesfully to mongodb atlas');
+        console.error(error);
+    })
+
+//body-parser allows us to be able to extract the JSON object from the request
+
+//to work with mongoose
+
 //express app are simply a series of middleware
 //contains four pieces of middleware
 
@@ -42,34 +62,12 @@ app.use((req, res, next) => {
 
   app.use(bodyParser.json()); //convert body into a usable JSON object
 
-  app.post('/api/stuff', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({
-      message: 'Thing created successfully!'
-    });
-  });
 
-app.use('/api/stuff', (req, res, next) => {
-    const stuff = [
-      {
-        _id: 'oeihfzeoi',
-        title: 'My first thing',
-        description: 'All of the info about my first thing',
-        imageUrl: 'https://picsum.photos/id/237/200/300',
-        price: 4900,
-        userId: 'qsomihvqios',
-      },
-      {
-        _id: 'oeihfzeomoihi',
-        title: 'My second thing',
-        description: 'All of the info about my second thing',
-        imageUrl: '',
-        price: 2900,
-        userId: 'qsomihvqios',
-      },
-    ];
-    res.status(200).json(stuff);
-  });
+  //Registering our router for for all requests to /api/stuff
+  app.use('/api/stuff', stuffRoutes);
+  app.use('/api/auth', userRoutes);
+  
+  
 
 
   /****************CORS ERRORS*********** 
