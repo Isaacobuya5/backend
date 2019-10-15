@@ -1,22 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const Thing = require('../models/thing')
+
+//apply authentication to our routes
+const auth = require('../middleware/auth');
 
 //importing our controllers
 const stuffCtrl = require('../controllers/stuff');
 //register our routes to Express router
-router.post('/', stuffCtrl.createThing);
+router.post('/', auth, stuffCtrl.createThing);
 
-router.get('/', stuffCtrl.getAllStuff);
+router.get('/', auth, stuffCtrl.getAllStuff);
 
-router.get('/:id', stuffCtrl.getOneThing);
+router.get('/:id',auth, stuffCtrl.getOneThing);
 
 //updating an individual record into our schema
 //using a new keyword with Mongoose creates a new _id field by default
-router.put('/:id', stuffCtrl.modifyThing);
+router.put('/:id',auth, stuffCtrl.modifyThing);
 
 //deleting a record from database
-router.delete('/:id', stuffCtrl.deleteThing);
+router.delete('/:id',auth, stuffCtrl.deleteThing);
 
 
 module.exports = router;
